@@ -1,7 +1,7 @@
 import os
 import requests
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, expr, current_timestamp, to_date
 from pyspark.sql.avro.functions import from_avro
 
 # Load config from environment variables
@@ -28,6 +28,7 @@ spark = SparkSession.builder \
     .config("spark.hadoop.fs.s3a.secret.key", S3_SECRET_KEY) \
     .config("spark.hadoop.fs.s3a.path.style.access", "true") \
     .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+    .config("spark.sql.session.timeZone", "Europe/Warsaw") \
     .getOrCreate()
 
 # Fetch schemas from Schema Registry
@@ -59,9 +60,14 @@ for topic in TOPICS:
     schema = schemas.get(topic)
     if schema:
         df_filtered = df_with_topic.filter(col("topic_str") == topic)
-        df_parsed = df_filtered.withColumn("data", from_avro(col("value"), schema, {"mode": "PERMISSIVE"})) \
+
+        # Strip first 5 bytes (magic byte + schema ID) from the Avro payload
+        df_stripped = df_filtered.withColumn("payload", expr("substring(value, 6, length(value) - 5)"))
+
+        df_parsed = df_stripped.withColumn("data", from_avro(col("payload"), schema, {"mode": "PERMISSIVE"})) \
                                .filter(col("data").isNotNull())
-        df_flat = df_parsed.selectExpr("data.*")
+        df_flat = df_parsed.selectExpr("data.after.*") \
+                   .withColumn("ingestion_ts", current_timestamp())
 
         query = df_flat.writeStream \
             .format("delta") \

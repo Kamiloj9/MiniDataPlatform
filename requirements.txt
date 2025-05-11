@@ -2,3 +2,8 @@ psycopg2-binary
 faker
 dotenv
 confluent-kafka[avro]
+deltalake>=0.14.0
+pyarrow
+boto3
+pandas
+s3fs
