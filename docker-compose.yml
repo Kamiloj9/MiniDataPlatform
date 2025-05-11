@@ -128,7 +128,6 @@ services:
       sleep 10;
       mc alias set local http://minio:9000 ${MINIO_USER} ${MINIO_PASS};
       mc ls local/${MINIO_BUCKET} || mc mb -p local/${MINIO_BUCKET};
-      mc policy set public local/${MINIO_BUCKET} || true;
       exit 0;"
     networks:
       - app_network
