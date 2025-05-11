@@ -65,7 +65,7 @@ python insert_data.py
 ```
 
 > **Note:** This step is **required only after a fresh start** (e.g., after `docker-compose down -v`).  
-> The `insert_data.py` script must be executed to make the `spark-app` run correctly,  
+> The `insert_data.py` script must be executed to make the `spark-app` runs correctly,  
 > as it initializes the source database with example entries used in the Spark processing job.
 
 ### 5. View Results
@@ -100,7 +100,7 @@ pip install -r requirements.txt
 ```
 
 ```bash
-python consumer.py
+python example_retrival.py
 ```
 
 example output:
@@ -160,6 +160,25 @@ Time-based filtering and partitioning
 Traceability of when data was ingested into the data lake
 
 Better observability for real-time pipelines
+
+## 📤 Retrieving Data from MinIO (Delta Lake)
+After the data pipeline processes changes from PostgreSQL and writes them to MinIO in Delta Lake format, you can retrieve and analyze that data using any tool that supports reading Parquet files over S3.
+
+In this project, MinIO serves as an S3-compatible object store where partitioned Delta tables are written by Spark. Each table (e.g., orders, customers) is stored under a dedicated path like:
+
+```
+s3://datalake/output/mydatabase.public.orders/
+s3://datalake/output/mydatabase.public.customers/
+s3://datalake/output/mydatabase.public.products/
+```
+
+These directories contain:
+
+Delta Lake metadata (in _delta_log/)
+
+Partitioned Parquet data files
+
+Checkpoints used for stream recovery
 
 ## ✅ Features
 
