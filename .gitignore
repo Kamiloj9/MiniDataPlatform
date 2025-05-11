@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Logs
+*.log
+
+# MacOS / Windows system files
+.DS_Store
+Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Docker artifacts
+**/.docker-compose.override.yml
+**/.env.override
+**/.env.local
+
+# PySpark & Delta
+.metastore_db/
+.derby.log
+spark-warehouse/
+
+# pycache inside spark apps or init scripts
+**/__pycache__/
+
+# Optional: exclude output & checkpoint folders in MinIO if mounted locally
+output/
+checkpoints/
