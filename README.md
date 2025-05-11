@@ -87,7 +87,7 @@ pip install -r requirements.txt
 python consumer.py
 ```
 
-## 7. Retriving data from datalake
+## 7. Retriving data from datalake (example)
 
 After the Spark streaming job writes Delta-formatted data to MinIO, you can inspect the stored output using a standalone Python script.
 
